@@ -17,10 +17,10 @@ export const generateChatCompletion = async (req: Request, res: Response, next: 
         chats.push({ content: message, role: "user" });
         user.chats.push({ content: message, role: "user" });
         // ----- Jugad Code ------
-        user.chats.push({ content: "Currently ChatGPT is not responding. I did a Jugad to give this message. No Paisa Right now. Later i will do it properly Heehhaahhahah", role: "assistant" });
+        // user.chats.push({ content: "Currently ChatGPT is not responding. I did a Jugad to give this message. No Paisa Right now. Later i will do it properly Heehhaahhahah", role: "assistant" });
         // console.log(user.chats);
-        await user.save();
-        return res.status(200).json({ chats: user.chats });
+        // await user.save();
+        // return res.status(200).json({ chats: user.chats });
         // ----- Jugad Code ended -----
 
         // send all the chats including the new one (question) to OpenAI API
