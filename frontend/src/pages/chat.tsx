@@ -8,52 +8,13 @@ import { deleteUserChats, getUserChats, sendChatRequest } from '../helper/api-co
 import toast from 'react-hot-toast';
 import { useNavigate } from "react-router-dom"
 
-// const chat_messsages = [
-//     {
-//         "role": "user",
-//         "content": "Hi, can you help me with some information?"
-//     },
-//     {
-//         "role": "assistant",
-//         "content": "Of course! What do you need help with?"
-//     },
-//     {
-//         "role": "user",
-//         "content": "Can you tell me the weather forecast for today?"
-//     },
-//     {
-//         "role": "assistant",
-//         "content": "Sure, please provide your location so I can look up the weather forecast."
-//     },
-//     {
-//         "role": "user",
-//         "content": "I'm in New York City."
-//     },
-//     {
-//         "role": "assistant",
-//         "content": "The weather forecast for New York City today is mostly sunny with a high of 75°F (24°C) and a low of 60°F (16°C)."
-//     },
-//     {
-//         "role": "user",
-//         "content": "Thank you! Can you also recommend a good book to read?"
-//     },
-//     {
-//         "role": "assistant",
-//         "content": "Sure! If you enjoy fiction, I recommend 'The Great Gatsby' by F. Scott Fitzgerald. It's a classic novel set in the Jazz Age."
-//     },
-//     {
-//         "role": "user",
-//         "content": "That sounds great. I'll check it out. Thanks!"
-//     },
-//     {
-//         "role": "assistant",
-//         "content": "You're welcome! If you have any other questions, feel free to ask."
-//     }
-// ]
-
+// interface Part {
+//     text: string;
+// }
 type Message = {
     role: "user" | "assistant";
-    content: string;
+    openai_response: string;
+    gemini_response: string;
 }
 
 const Chat = () => {
@@ -63,16 +24,19 @@ const Chat = () => {
     const [chatMesssages, setChatMessages] = useState<Message[]>([]);
     const handleSubmit = async () => {
         // console.log(inputRef.current?.value);
-        const content = inputRef.current?.value as string;
+        const data = inputRef.current?.value as string;
         if (inputRef && inputRef.current) {
             inputRef.current.value = "";
         }
-        const newMessage: Message = { role: "user", content: content };
+        // const newMessage: Message = { role: "user", content: content };
+        // const newMessage: Message = { parts: [{ text: data }], role: "user" };
+        const newMessage: Message = { openai_response: data, gemini_response: data, role: "user" };
         setChatMessages((prev) => [...prev, newMessage]);
 
         // Send the API Request to backend and get the result
-        const chatData = await sendChatRequest(content);
-        setChatMessages([...chatData.chats]);
+        const chatData = await sendChatRequest(data);
+        // console.log(chatData.chats);
+        setChatMessages(chatData);
     };
     const handleDeletechats = async () => {
         try {
@@ -90,7 +54,7 @@ const Chat = () => {
         if (auth?.isLoggedIn && auth.user) {
             toast.loading("Loading Chats", { id: "loadchats" });
             getUserChats().then((data) => {
-                setChatMessages([...data.chats]);
+                setChatMessages(data);
                 toast.success("Successfully loaded chats", { id: "loadchats" });
             }).catch((err) => {
                 console.log(err);
@@ -116,17 +80,27 @@ const Chat = () => {
                     you are talking to a ChatBot
                 </Typography>
                 <Typography sx={{ mx: "auto", fontFamily: "work sans", my: 4, p: 3 }}>
-                    you can ask a questions related to knoledge, Business, Advices, education, etc. But avoid sharing personal information
+                    {/* you can ask a questions related to knoledge, Business, Advices, education, etc. But avoid sharing personal information */}
+                    This is the AI chatbot created by Adithya SN. You can ask a questions related to knoledge, Business, Advices, education, etc.
                 </Typography>
                 <Button onClick={handleDeletechats} sx={{ width: "200px", my: "auto", color: "white", fontWeight: 700, borderRadius: 3, mx: "auto", bgcolor: red[300], ":hover": { bgcolor: red.A400, }, }}>Clear Converzation</Button>
             </Box>
         </Box>
-        <Box sx={{ display: "flex", flex: { md: 0.8, xs: 1, sm: 1 }, flexDirection: 'column', padding: 3 }}>
-            <Typography sx={{ fontSize: "40px", color: "white", mb: 2, mx: "auto", fontWeight: 600 }}>GPT-3.5 Turbo</Typography>
-            <Box sx={{ width: "100%", height: "60vh", borderRadius: 3, mx: "auto", display: 'flex', flexDirection: 'column', overflow: "scroll", overflowX: "hidden", overflowY: "auto", scrollBehavior: "smooth" }}>
+        <Box sx={{ display: "flex", flex: { md: 0.8, xs: 1, sm: 1 }, flexDirection: 'column', padding: 3, maxWidth: "100%", overflow: "auto" }}>
+            <Typography sx={{ fontSize: "40px", color: "white", mb: 2, mx: "auto", fontWeight: 600 }}> Model - GPT 3.5 Turbo v/s gemini-1.5-flash</Typography>
+            <Box sx={{ width: "100%", height: "60vh", borderRadius: 3, mx: "auto", display: 'flex', flexDirection: 'column', overflowX: "hidden", overflowY: "auto", scrollBehavior: "smooth" }}>
                 {chatMesssages.map((chat, index) =>
+                    // console.log(chat)
                     //@ts-ignore
-                    <div><ChatItem content={chat.content} role={chat.role} key={index}></ChatItem></div>
+                    // <div><ChatItem content={chat.content} role={chat.role} key={index}></ChatItem></div>
+                    // <div><ChatItem content={chat.parts[0].text} role={chat.role} key={index}></ChatItem></div>
+                    <div key={index}>
+                        {/* {chat.parts.length > 0 ? ( */}
+                        <ChatItem gemini_response={chat.gemini_response} openai_response={chat.openai_response} role={chat.role} />
+                        {/*  ) : (
+                            <span>No content available</span>
+                         )} */}
+                    </div>
                 )}
             </Box>
             <div style={{ width: "100%", borderRadius: 8, backgroundColor: "rgb(17,27,39)", display: 'flex', margin: "auto" }}>

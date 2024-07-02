@@ -6,11 +6,18 @@ const TypingAnim = () => {
         <TypeAnimation
             sequence={[
                 // Same substring at the start will only be typed once, initially
-                'Chat with your OWN AI',
+                // 'Chat with your OWN AI',
+                // 1000,
+                // 'Built with OpenAI',
+                // 2000,
+                // 'Your Own Customised ChatGPT',
+                // 1500,
+
+                'Chat with your Multiple AI',
                 1000,
-                'Built with OpenAI',
+                'Built with OpenAI and Goooooooooole',
                 2000,
-                'Your Own Customised ChatGPT',
+                'Developed By Adithya SN',
                 1500,
             ]}
             speed={50}

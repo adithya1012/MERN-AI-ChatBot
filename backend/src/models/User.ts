@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { randomUUID } from "crypto";
-
-const chatSchema = new mongoose.Schema({
+const chatSchema_openai = new mongoose.Schema({
     id: {
         type: String,
         default: randomUUID
@@ -14,7 +13,22 @@ const chatSchema = new mongoose.Schema({
         type: String,
         require: true,
     }
-})
+});
+
+const chatSchema_gemini = new mongoose.Schema({
+    id: {
+        type: String,
+        default: randomUUID
+    },
+    role: {
+        type: String,
+        require: true,
+    },
+    parts: {
+        type: Array,
+        require: true,
+    }
+});
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -30,7 +44,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    chats: [chatSchema] // this is an array of chatSchema
+    chats_gemini: [chatSchema_gemini], // this is an array of chatSchema for Gemini
+    chats_openai: [chatSchema_openai] // this is an array of chatSchema for Openai
 });
-
 export default mongoose.model("User", userSchema);
+//# sourceMappingURL=User.js.map
